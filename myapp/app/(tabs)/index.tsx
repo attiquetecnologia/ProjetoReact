@@ -33,6 +33,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <View style={styles.titleContainer}>
               <Text>{item.nome}</Text>
+              <Text>{item.idade}</Text>
               <Image
                 source={{ uri: item.foto }}
                 style={{ width: 50, height: 40 }}
