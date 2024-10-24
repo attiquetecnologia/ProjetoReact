@@ -14,16 +14,18 @@ export default function IMC() {
   const [idade, setIdade] = useState();
   const [altura, setAltura] = useState();
   const [resultado, setResultado] = useState('');
-  const [imc, setIMC] = useState();
   
   const [usuario, setUsuario] = useState({
     nome: '',
     idade: 0,
-    });
+  });
+
+  const handleChange = (name: string, value: string) => {
+    setUsuario({...usuario, [name]:value});
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUsuario({ nome: nome, idade: idade });
     try {
       const response = await axios.post('http://127.0.0.1:8000/usuarios/', usuario);
       console.log(response.data);
@@ -31,20 +33,6 @@ export default function IMC() {
       console.error(error);
     }
   };
-
-  function calcular(){
-    setIMC(peso/(altura*altura));
-    if (imc<=18.5){
-        setResultado(nome+", seu imc é de "+imc+", abaixo do peso!");
-    } else if (imc>=18.5 && imc<=24.5) {
-        setResultado(nome+", seu imc é de "+imc+", peso está adequado!");
-    } else if (imc>=25.5 && imc<30) {
-        setResultado(nome+", seu imc é de "+imc+", peso está alto!");
-    } else if (imc>=30) {
-        setResultado(nome+", seu imc é de "+imc+", está obeso!");
-    }
-
-  }
   
   return (
     <ParallaxScrollView
@@ -72,28 +60,26 @@ export default function IMC() {
                 <View>
                     <Text>Nome</Text>
                     <TextInput 
-                        onChangeText={setNome}
-                        value={nome}
+                        onChangeText={(value) => handleChange('nome', value)}
+                        value={usuario.nome}
                         style={styles['form-control']} 
                         placeholder='Seu nome' 
                         keyboardType="text"
-                        />
-                        
-
+                    />
                 </View>
                 <View>
                     <Text>Idade</Text>
                     <TextInput
-                        onChangeText={setAltura}
-                        value={altura} 
+                        onChangeText={(value) => handleChange('idade', value)}
+                        value={usuario.idade} 
                         style={styles['form-control']} 
-                        placeholder='Altura' 
+                        placeholder='Idade' 
                         keyboardType="numeric"
                         />
                 </View>
                 
                 <View>
-                    <Button onPress={calcular} title="Calcular"></Button>
+                    <Button onPress={handleSubmit} title="Salvar"></Button>
                 </View>
                 <View id='resultado'>
                     {resultado}
