@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function IMC() {
+export default function Cadastro() {
   const [nome, setNome] = useState();
   const [idade, setIdade] = useState();
   const [altura, setAltura] = useState();
@@ -17,7 +17,7 @@ export default function IMC() {
   
   const [usuario, setUsuario] = useState({
     nome: '',
-    idade: 0,
+    idade: '',
   });
 
   const handleChange = (name: string, value: string) => {
