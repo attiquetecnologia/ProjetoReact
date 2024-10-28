@@ -15,7 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Imovel(BaseModel):
+class ImovelCreate(BaseModel):
+    nome: str
     finalidade: tuple | None # alugar, comprar, permuta
     tipo: str # Casa, terreno, Sala...
     status: str # publicado, rascunho, lixo
@@ -24,8 +25,10 @@ class Imovel(BaseModel):
     valor_aluguel: float
     valor_venda: float
     bairro: str
+    area_terreno: float
+    area_construida: float
 
-class ImovelRead(Imovel):
+class ImovelRead(ImovelCreate):
     id: int
 
 class Usuario(BaseModel):
@@ -35,7 +38,7 @@ class UsuarioRead(Usuario):
     id: int
 
 class CRUD:
-    caminho = "banco.json"
+    caminho = "imoveis.json" # é possível usar crud.caminho = 'novo.json'
     def __init__(self, modo) -> None:
         self.modo = modo
 
@@ -52,6 +55,25 @@ class CRUD:
                 file.write(dados)
             elif self.modo == '+r':
                 return file.read()
+
+class ImovelCRUD(ImovelRead):
+    def __init__(self):
+        pass
+
+
+@app.get('/imoveis') # , response_model=list[ImovelRead]
+async def lista_imoveis(skip: int = 0, limit: int = 100, finalidade=None, tipo=None):
+    """
+        skip: número da paginação (Exemplo você vai consultar a pagina 1 de 10)
+        limit: número de itens por página (padrão é 100 mas pode ser alterado para 10-1000)
+    """
+    import json
+    crud = CRUD('+r') # conexao banco
+    dados = crud.conexao()
+    dados = json.loads(dados)
+    if finalidade: # filtra por venda, locacao...
+        dados = list(filter(lambda item: item.finalidade in finalidade, dados))
+    return dados
 
 @app.get("/itens")
 async def obter_itens():
