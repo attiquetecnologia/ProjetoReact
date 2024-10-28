@@ -15,6 +15,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Imovel(BaseModel):
+    finalidade: tuple | None # alugar, comprar, permuta
+    tipo: str # Casa, terreno, Sala...
+    status: str # publicado, rascunho, lixo
+    imagem: str
+    descricao: str
+    valor_aluguel: float
+    valor_venda: float
+    bairro: str
+
+class ImovelRead(Imovel):
+    id: int
+
 class Usuario(BaseModel):
     nome: str
     idade: int
