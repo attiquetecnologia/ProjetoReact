@@ -50,7 +50,7 @@ class CRUD:
             modo: '+r' para leitura
             modo: '+w' para escrita
         """
-        with open(self.caminho, self.modo) as file:
+        with open(self.caminho, self.modo, encoding='utf8') as file:
             if self.modo == '+w':
                 file.write(dados)
             elif self.modo == '+r':
@@ -62,7 +62,7 @@ class ImovelCRUD(ImovelRead):
 
 
 @app.get('/imoveis') # , response_model=list[ImovelRead]
-async def lista_imoveis(skip: int = 0, limit: int = 100, finalidade=None, tipo=None):
+async def lista_imoveis(skip: int = 0, limit: int = 100, finalidade=None, tipo=None, bairro=None, area_t_min=None, area_t_max=None, preco_v_min=None, preco_v_max=None, preco_l_min=None, preco_l_max=None):
     """
         skip: número da paginação (Exemplo você vai consultar a pagina 1 de 10)
         limit: número de itens por página (padrão é 100 mas pode ser alterado para 10-1000)
@@ -72,7 +72,27 @@ async def lista_imoveis(skip: int = 0, limit: int = 100, finalidade=None, tipo=N
     dados = crud.conexao()
     dados = json.loads(dados)
     if finalidade: # filtra por venda, locacao...
-        dados = list(filter(lambda item: item.finalidade in finalidade, dados))
+        filtro = lambda item: item['finalidade'] in finalidade.upper()
+        dados = list(filter(filtro, dados))
+    
+    if tipo:
+        filtro = lambda item: item['tipo'] in tipo.upper()
+        dados = list(filter(filtro, dados))
+
+    if bairro: # bairro
+        filtro = lambda item: item['bairro'] in bairro.upper()
+        dados = list(filter(filtro, dados))
+
+    if area_t_min: # bairro
+        filtro = lambda item: float(item['area_terreno']) >= float(area_t_min)
+        dados = list(filter(filtro, dados))
+
+    if area_t_max: # bairro
+        filtro = lambda item: float(item['area_terreno']) <= float(area_t_max)
+        dados = list(filter(filtro, dados))
+
+    # Desenvolva os demais filtros seguindo o modelo
+
     return dados
 
 @app.get("/itens")
