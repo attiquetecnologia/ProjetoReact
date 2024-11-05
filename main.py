@@ -73,7 +73,8 @@ async def lista_imoveis(skip: int = 0, limit: int = 100, finalidade=None, tipo=N
     dados = json.loads(dados)
     if finalidade: # filtra por venda, locacao...
         filtro = lambda item: item['finalidade'] in finalidade.upper()
-        dados = list(filter(filtro, dados))
+        skip = 1 if skip!=0 else 0
+        dados = list(filter(filtro, dados[skip:limit]))
     
     if tipo:
         filtro = lambda item: item['tipo'] in tipo.upper()
@@ -99,7 +100,8 @@ async def lista_imoveis(skip: int = 0, limit: int = 100, finalidade=None, tipo=N
 async def obter_itens():
     crud = CRUD('+r')
     dados = crud.conexao()
-    return dados
+    import json
+    return json.loads(dados)
 
 @app.post("/usuarios")
 async def salvar_item(usuario: Usuario):

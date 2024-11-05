@@ -27,7 +27,17 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-
+      {itens.map((item)=>
+      <View key={item.id}>
+        <Image
+          source={require('@/assets/images/senai.jpeg')}
+          style={styles.reactLogo,{width: 50, height: 50}}
+        />
+        <Text>{item.tipo}</Text>
+        <Text>{item.nome}</Text>
+        <Text>{item.descricao}</Text>
+        </View>
+      )}
       <FlatList
         data={itens}
         renderItem={({ item }) => (
